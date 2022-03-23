@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("batch")
+@RequestMapping("batch/load/stocks/")
 public class BatchController {
 
     private static final Logger log = LoggerFactory.getLogger(BatchController.class);
@@ -26,15 +26,32 @@ public class BatchController {
     private JobLauncher jobLauncher;
 
     @Autowired
-    @Qualifier("importStocksJob")
-    private Job job;
+    @Qualifier("importStocksJPAJob")
+    private Job importStocksJPAJob;
 
-    @PostMapping(path = "/start")
-    public void startBatch() {
+    @Autowired
+    @Qualifier("importStocksMongoJob")
+    private Job importStocksMongoJob;
+
+    @PostMapping(path = "/jpa")
+    public void loadStocksJpaBatchJob() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(job, jobParameters);
+            jobLauncher.run(importStocksJPAJob, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException
+                | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+
+            log.error(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/mongo")
+    public void loadStocksMongoBatchJob() {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(importStocksMongoJob, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException
                 | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
 

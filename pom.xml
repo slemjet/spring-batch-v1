@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>spring-batch-v1</artifactId>
+    <artifactId>spring-batch-mongo-v2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-batch-v1</name>
-    <description>spring-batch-v1</description>
+    <name>spring-batch-mongo-v2</name>
+    <description>spring-batch-mongo-v2</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -28,6 +28,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
         <dependency>
