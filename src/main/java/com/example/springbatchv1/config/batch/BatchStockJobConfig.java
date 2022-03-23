@@ -1,7 +1,6 @@
 package com.example.springbatchv1.config.batch;
 
 import com.example.springbatchv1.model.Stock;
-import com.example.springbatchv1.persistence.documents.StockDocument;
 import com.example.springbatchv1.persistence.enitities.StockEntity;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -28,54 +27,28 @@ public class BatchStockJobConfig {
     public StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    @Qualifier("stockToEntityProcessor")
-    public ItemProcessor<Stock, StockEntity> stockToEntityProcessor;
-
-    @Autowired
-    @Qualifier("stockToDocumentProcessor")
-    public ItemProcessor<Stock, StockDocument> stockToDocumentProcessor;
+    @Qualifier("stockProcessor")
+    public ItemProcessor<Stock, StockEntity> stockProcessor;
 
     @Bean
-    public Step csvToDbJPAStep(@Qualifier("stockCsvReader") ItemReader<Stock> reader,
-                               @Qualifier("stockJpaWriter") ItemWriter<StockEntity> writer) {
+    public Step csvToDbStep(@Qualifier("stockCsvReader") ItemReader<Stock> reader,
+                      @Qualifier("stockJpaWriter") ItemWriter<StockEntity> writer) {
 
         return this.stepBuilderFactory.get("csvToDbStep").<Stock, StockEntity>chunk(5)
                 .reader(reader)
-                .processor(stockToEntityProcessor)
+                .processor(stockProcessor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
-    public Job importStocksJPAJob(JobCompletionNotificationListener listener,
-                                  @Qualifier("csvToDbJPAStep") Step csvToDbJPAStep) {
+    public Job importStocksJob(JobCompletionNotificationListener listener,
+                               @Qualifier("csvToDbStep") Step step1) {
 
-        return this.jobBuilderFactory.get("importStocksJPAJob")
+        return this.jobBuilderFactory.get("importStocksJob")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .start(csvToDbJPAStep)
-                .build();
-    }
-
-    @Bean
-    public Step csvToDbMongoStep(@Qualifier("stockCsvReader") ItemReader<Stock> reader,
-                                 @Qualifier("stockMongoWriter") ItemWriter<StockDocument> writer) {
-
-        return this.stepBuilderFactory.get("csvToDbMongoStep").<Stock, StockDocument>chunk(5)
-                .reader(reader)
-                .processor(stockToDocumentProcessor)
-                .writer(writer)
-                .build();
-    }
-
-    @Bean
-    public Job importStocksMongoJob(JobCompletionNotificationListener listener,
-                                    @Qualifier("csvToDbMongoStep") Step csvToDbMongoStep) {
-
-        return this.jobBuilderFactory.get("importStocksMongoJob")
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .start(csvToDbMongoStep)
+                .start(step1)
                 .build();
     }
 }
