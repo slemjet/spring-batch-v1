@@ -1,5 +1,7 @@
 package com.example.springbatchv1.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -34,6 +36,7 @@ public class BatchController {
     private Job importStocksMongoJob;
 
     @PostMapping(path = "/jpa")
+    @Operation(description = "Job to load stocks using JPA")
     public void loadStocksJpaBatchJob() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -47,6 +50,7 @@ public class BatchController {
     }
 
     @PostMapping(path = "/mongo")
+    @Operation(description = "Job to load stocks using mongo")
     public void loadStocksMongoBatchJob() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();

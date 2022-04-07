@@ -55,20 +55,17 @@ public class BatchStockReaderConfig {
     }
 
     private FieldSetMapper<Stock> stockFieldSetMapper() {
-        return fieldSet -> {
-            Stock stock = new Stock(
-                    fieldSet.readString("symbol"),
-                    fieldSet.readString("description"),
-                    fieldSet.readString("category2"),
-                    fieldSet.readString("category3"),
-                    fieldSet.readString("GICSSector"),
-                    fieldSet.readString("marketCap"),
-                    fieldSet.readString("dividendYield"),
-                    fieldSet.readString("priceToTTMEarnings"),
-                    fieldSet.readString("priceToTTMSales"),
-                    fieldSet.readString("priceToBookValue")
-            );
-            return stock;
-        };
+        return fieldSet -> new Stock(
+                fieldSet.readString("symbol"),
+                fieldSet.readString("description"),
+                fieldSet.readString("category2"),
+                fieldSet.readString("category3"),
+                fieldSet.readString("GICSSector"),
+                fieldSet.readString("marketCap"),
+                fieldSet.readString("dividendYield"),
+                fieldSet.readString("priceToTTMEarnings"),
+                fieldSet.readString("priceToTTMSales"),
+                fieldSet.readString("priceToBookValue")
+        );
     }
 }
