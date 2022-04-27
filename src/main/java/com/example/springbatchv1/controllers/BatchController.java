@@ -38,7 +38,9 @@ public class BatchController {
     @Operation(description = "Job to load stocks using JPA")
     public void loadStocksJpaBatchJob() {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+                .addLong("startAt", System.currentTimeMillis())
+                .addString("test", "value")
+                .toJobParameters();
         try {
             jobLauncher.run(importStocksJPAJob, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException

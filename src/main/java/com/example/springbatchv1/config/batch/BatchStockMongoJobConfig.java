@@ -26,13 +26,10 @@ public class BatchStockMongoJobConfig {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    @Qualifier("stockToDocumentProcessor")
-    public ItemProcessor<Stock, StockDocument> stockToDocumentProcessor;
-
     @Bean
     public Step csvToDbMongoStep(@Qualifier("stockCsvReader") ItemReader<Stock> reader,
-                                 @Qualifier("stockMongoWriter") ItemWriter<StockDocument> writer) {
+                                 @Qualifier("stockMongoWriter") ItemWriter<StockDocument> writer,
+                                 @Qualifier("stockToDocumentProcessor") ItemProcessor<Stock, StockDocument> stockToDocumentProcessor) {
 
         return this.stepBuilderFactory.get("csvToDbMongoStep")
                 .<Stock, StockDocument>chunk(5)

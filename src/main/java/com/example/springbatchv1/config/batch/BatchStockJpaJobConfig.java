@@ -26,14 +26,10 @@ public class BatchStockJpaJobConfig {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    @Qualifier("stockToEntityProcessor")
-    public ItemProcessor<Stock, StockEntity> stockToEntityProcessor;
-
-
     @Bean
     public Step csvToDbJPAStep(@Qualifier("stockCsvReader") ItemReader<Stock> reader,
-                               @Qualifier("stockJpaWriter") ItemWriter<StockEntity> writer) {
+                               @Qualifier("stockJpaWriter") ItemWriter<StockEntity> writer,
+                               @Qualifier("stockToEntityProcessor") ItemProcessor<Stock, StockEntity> stockToEntityProcessor) {
 
         return this.stepBuilderFactory.get("csvToDbStep")
                 .<Stock, StockEntity>chunk(5)
